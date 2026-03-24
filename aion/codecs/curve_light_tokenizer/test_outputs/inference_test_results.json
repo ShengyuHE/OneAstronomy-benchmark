@@ -1,0 +1,48 @@
+{
+  "checkpoint": "outputs/training_astrom3_p2_fsq_1600/checkpoints/best_model.pt",
+  "config": "configs/phase2_reset/p2_reset_astrom3_fsq_1600.json",
+  "vocab_size": 2000,
+  "embed_dim": 5,
+  "levels": [
+    4,
+    4,
+    5,
+    5,
+    5
+  ],
+  "sample_metadata": {
+    "original_length": 286,
+    "n_valid_points": 199,
+    "preprocessing": {
+      "sigma": 3.0,
+      "snr_threshold": 3.0,
+      "min_points": 3
+    },
+    "name": "ASASSN-VJ075844.56+152125.3",
+    "label": "EB",
+    "object_id": "EDR3 654686331696211456"
+  },
+  "tokens": [
+    1397,
+    1285,
+    349,
+    822,
+    1770,
+    1013,
+    907,
+    1365,
+    1317,
+    601,
+    1391,
+    926,
+    902
+  ],
+  "token_statistics": {
+    "min": 349,
+    "max": 1770,
+    "unique": 13,
+    "mean": 1080.3846153846155,
+    "std": 369.2936164462215
+  },
+  "reconstruction_mae": 74.63981628417969
+}

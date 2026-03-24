@@ -1,0 +1,47 @@
+{
+  "os":  "Linux-6.8.0-90-generic-x86_64-with-glibc2.35",
+  "python":  "CPython 3.11.14",
+  "startedAt":  "2026-03-24T12:28:02.408337Z",
+  "program":  "/mnt/user/oneastronomy-1218/zwg_project/AION/train_aion_ddp_token.py",
+  "codePath":  "train_aion_ddp_token.py",
+  "codePathLocal":  "train_aion_ddp_token.py",
+  "git":  {
+    "remote":  "git@github.com:ZhangwenguangHikvision/AION.git",
+    "commit":  "337f5ce53f247627735b9f24a126f6c023fd6f36"
+  },
+  "email":  "wenguangzhang@foxmail.com",
+  "root":  "/mnt/user/oneastronomy-1218/zwg_project/AION",
+  "host":  "b9ea1b7193d6",
+  "executable":  "/opt/conda/envs/aion/bin/python3.11",
+  "cpu_count":  48,
+  "cpu_count_logical":  96,
+  "gpu":  "NVIDIA GeForce RTX 4090 D",
+  "gpu_count":  2,
+  "disk":  {
+    "/":  {
+      "total":  "1883692236800",
+      "used":  "1343386148864"
+    }
+  },
+  "memory":  {
+    "total":  "134760411136"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce RTX 4090 D",
+      "memoryTotal":  "25757220864",
+      "cudaCores":  14592,
+      "architecture":  "Ada",
+      "uuid":  "GPU-81ca2f4c-91e6-2463-7604-0605ebc61911"
+    },
+    {
+      "name":  "NVIDIA GeForce RTX 4090 D",
+      "memoryTotal":  "25757220864",
+      "cudaCores":  14592,
+      "architecture":  "Ada",
+      "uuid":  "GPU-555db601-be7b-85f1-eed4-0e14641341a4"
+    }
+  ],
+  "cudaVersion":  "12.6",
+  "writerId":  "j89zynqfz5iak74so0h97hgw9f5onrh5"
+}

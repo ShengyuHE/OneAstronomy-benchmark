@@ -1,0 +1,138 @@
+_wandb:
+    value:
+        cli_version: 0.22.3
+        e:
+            j89zynqfz5iak74so0h97hgw9f5onrh5:
+                codePath: train_aion_ddp_token.py
+                codePathLocal: train_aion_ddp_token.py
+                cpu_count: 48
+                cpu_count_logical: 96
+                cudaVersion: "12.6"
+                disk:
+                    /:
+                        total: "1883692236800"
+                        used: "1343386148864"
+                email: wenguangzhang@foxmail.com
+                executable: /opt/conda/envs/aion/bin/python3.11
+                git:
+                    commit: 337f5ce53f247627735b9f24a126f6c023fd6f36
+                    remote: git@github.com:ZhangwenguangHikvision/AION.git
+                gpu: NVIDIA GeForce RTX 4090 D
+                gpu_count: 2
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 14592
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090 D
+                      uuid: GPU-81ca2f4c-91e6-2463-7604-0605ebc61911
+                    - architecture: Ada
+                      cudaCores: 14592
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090 D
+                      uuid: GPU-555db601-be7b-85f1-eed4-0e14641341a4
+                host: b9ea1b7193d6
+                memory:
+                    total: "134760411136"
+                os: Linux-6.8.0-90-generic-x86_64-with-glibc2.35
+                program: /mnt/user/oneastronomy-1218/zwg_project/AION/train_aion_ddp_token.py
+                python: CPython 3.11.14
+                root: /mnt/user/oneastronomy-1218/zwg_project/AION
+                startedAt: "2026-03-24T12:28:02.408337Z"
+                writerId: j89zynqfz5iak74so0h97hgw9f5onrh5
+        m: []
+        python_version: 3.11.14
+        t:
+            "1":
+                - 1
+                - 49
+            "2":
+                - 1
+                - 49
+            "3":
+                - 2
+                - 13
+                - 16
+            "4": 3.11.14
+            "5": 0.22.3
+            "12": 0.22.3
+            "13": linux-x86_64
+anchor_ratio_max:
+    value: 0.9
+anchor_ratio_min:
+    value: 0.3
+batch_size:
+    value: 64
+beta_alpha:
+    value: 1
+beta_beta:
+    value: 4
+cache_dir:
+    value: weight/aion-base/
+data_path:
+    value: data/train/
+eval_interval:
+    value: 1
+flux_weight:
+    value: 1
+grad_accum_steps:
+    value: 2
+image_weight:
+    value: 1
+input_budget:
+    value: 256
+label_smoothing:
+    value: 0
+log_interval:
+    value: 100
+lr:
+    value: 0.0001
+max_grad_norm:
+    value: 1
+max_samples:
+    value: 1000
+max_steps:
+    value: null
+min_lr:
+    value: 1e-06
+model_name:
+    value: polymathic-ai/aion-base
+num_epochs:
+    value: 5
+num_workers:
+    value: 4
+output_budget:
+    value: 128
+output_dir:
+    value: outputs/aion_training
+resume:
+    value: null
+save_interval:
+    value: 10
+seed:
+    value: 42
+spectrum_weight:
+    value: 1
+steps_per_epoch:
+    value: null
+use_amp:
+    value: true
+use_tensorboard:
+    value: false
+use_wandb:
+    value: true
+val_split:
+    value: 0.05
+wandb_entity:
+    value: null
+wandb_project:
+    value: aion-training
+wandb_run_name:
+    value: null
+warmup_ratio:
+    value: 0.02
+warmup_start_factor:
+    value: 0.2
+warmup_steps:
+    value: null
+weight_decay:
+    value: 0.1

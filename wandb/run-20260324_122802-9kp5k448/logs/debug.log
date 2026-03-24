@@ -1,0 +1,26 @@
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_setup.py:_flush():81] Current SDK version is 0.22.3
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_setup.py:_flush():81] Configure stats pid to 7834
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_setup.py:_flush():81] Loading settings from /root/.config/wandb/settings
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_setup.py:_flush():81] Loading settings from /mnt/user/oneastronomy-1218/zwg_project/AION/wandb/settings
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_init.py:setup_run_log_directory():706] Logging user logs to /mnt/user/oneastronomy-1218/zwg_project/AION/wandb/run-20260324_122802-9kp5k448/logs/debug.log
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_init.py:setup_run_log_directory():707] Logging internal logs to /mnt/user/oneastronomy-1218/zwg_project/AION/wandb/run-20260324_122802-9kp5k448/logs/debug-internal.log
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_init.py:init():833] calling init triggers
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_init.py:init():838] wandb.init called with sweep_config: {}
+config: {'model_name': 'polymathic-ai/aion-base', 'cache_dir': 'weight/aion-base/', 'data_path': 'data/train/', 'val_split': 0.05, 'max_samples': 1000, 'batch_size': 64, 'num_epochs': 5, 'max_steps': None, 'steps_per_epoch': None, 'grad_accum_steps': 2, 'num_workers': 4, 'lr': 0.0001, 'min_lr': 1e-06, 'warmup_steps': None, 'warmup_ratio': 0.02, 'warmup_start_factor': 0.2, 'weight_decay': 0.1, 'max_grad_norm': 1.0, 'label_smoothing': 0.0, 'spectrum_weight': 1.0, 'image_weight': 1.0, 'flux_weight': 1.0, 'input_budget': 256, 'anchor_ratio_min': 0.3, 'anchor_ratio_max': 0.9, 'output_budget': 128, 'beta_alpha': 1, 'beta_beta': 4, 'use_amp': True, 'output_dir': 'outputs/aion_training', 'log_interval': 100, 'save_interval': 10, 'eval_interval': 1, 'use_tensorboard': False, 'use_wandb': True, 'wandb_project': 'aion-training', 'wandb_entity': None, 'wandb_run_name': None, 'resume': None, 'seed': 42, '_wandb': {}}
+2026-03-24 12:28:02,409 INFO    MainThread:7834 [wandb_init.py:init():881] starting backend
+2026-03-24 12:28:02,615 INFO    MainThread:7834 [wandb_init.py:init():884] sending inform_init request
+2026-03-24 12:28:02,619 INFO    MainThread:7834 [wandb_init.py:init():892] backend started and connected
+2026-03-24 12:28:02,621 INFO    MainThread:7834 [wandb_init.py:init():962] updated telemetry
+2026-03-24 12:28:02,625 INFO    MainThread:7834 [wandb_init.py:init():986] communicating run to backend with 90.0 second timeout
+2026-03-24 12:28:04,055 INFO    MainThread:7834 [wandb_init.py:init():1033] starting run threads in backend
+2026-03-24 12:28:04,250 INFO    MainThread:7834 [wandb_run.py:_console_start():2506] atexit reg
+2026-03-24 12:28:04,250 INFO    MainThread:7834 [wandb_run.py:_redirect():2354] redirect: wrap_raw
+2026-03-24 12:28:04,250 INFO    MainThread:7834 [wandb_run.py:_redirect():2423] Wrapping output streams.
+2026-03-24 12:28:04,251 INFO    MainThread:7834 [wandb_run.py:_redirect():2446] Redirects installed.
+2026-03-24 12:28:04,252 INFO    MainThread:7834 [wandb_init.py:init():1073] run started, returning control to user process
+2026-03-24 12:30:03,026 INFO    MainThread:7834 [wandb_run.py:_finish():2272] finishing run wenguangzhang-zjlab/aion-training/9kp5k448
+2026-03-24 12:30:03,027 INFO    MainThread:7834 [wandb_run.py:_atexit_cleanup():2471] got exitcode: 0
+2026-03-24 12:30:03,028 INFO    MainThread:7834 [wandb_run.py:_restore():2453] restore
+2026-03-24 12:30:03,028 INFO    MainThread:7834 [wandb_run.py:_restore():2459] restore done
+2026-03-24 12:30:05,024 INFO    MainThread:7834 [wandb_run.py:_footer_sync_info():3835] logging synced files

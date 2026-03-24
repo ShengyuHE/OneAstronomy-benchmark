@@ -1,0 +1,227 @@
+nohup: ignoring input
+W0324 12:27:43.674000 7768 site-packages/torch/distributed/run.py:803] 
+W0324 12:27:43.674000 7768 site-packages/torch/distributed/run.py:803] *****************************************
+W0324 12:27:43.674000 7768 site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0324 12:27:43.674000 7768 site-packages/torch/distributed/run.py:803] *****************************************
+================================================================================
+AION 分布式训练
+================================================================================
+World Size: 2
+Rank: 0
+Local Rank: 0
+Device: cuda:0
+================================================================================
+输出目录: outputs/aion_training/20260324_122747
+b9ea1b7193d6:7834:7834 [0] NCCL INFO NCCL_SOCKET_IFNAME set by environment to eth0
+b9ea1b7193d6:7834:7834 [0] NCCL INFO Bootstrap: Using eth0:172.17.0.2<0>
+b9ea1b7193d6:7834:7834 [0] NCCL INFO cudaDriverVersion 12060
+b9ea1b7193d6:7834:7834 [0] NCCL INFO NCCL version 2.27.5+cuda12.9
+b9ea1b7193d6:7834:7834 [0] NCCL INFO Comm config Blocking set to 1
+b9ea1b7193d6:7835:7835 [1] NCCL INFO cudaDriverVersion 12060
+b9ea1b7193d6:7835:7835 [1] NCCL INFO NCCL_SOCKET_IFNAME set by environment to eth0
+b9ea1b7193d6:7835:7835 [1] NCCL INFO Bootstrap: Using eth0:172.17.0.2<0>
+b9ea1b7193d6:7835:7835 [1] NCCL INFO NCCL version 2.27.5+cuda12.9
+b9ea1b7193d6:7835:7835 [1] NCCL INFO Comm config Blocking set to 1
+b9ea1b7193d6:7834:7847 [0] NCCL INFO NET/Plugin: Could not find: libnccl-net.so. 
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Failed to open libibverbs.so[.1]
+b9ea1b7193d6:7834:7847 [0] NCCL INFO NCCL_SOCKET_IFNAME set by environment to eth0
+b9ea1b7193d6:7834:7847 [0] NCCL INFO NET/Socket : Using [0]eth0:172.17.0.2<0>
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Initialized NET plugin Socket
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Assigned NET plugin Socket to comm
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Using network Socket
+b9ea1b7193d6:7834:7847 [0] NCCL INFO ncclCommInitRankConfig comm 0x57aee249e890 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 65000 commId 0xf374247e6ca81acb - Init START
+b9ea1b7193d6:7835:7850 [1] NCCL INFO NET/Plugin: Could not find: libnccl-net.so. 
+b9ea1b7193d6:7835:7850 [1] NCCL INFO Failed to open libibverbs.so[.1]
+b9ea1b7193d6:7835:7850 [1] NCCL INFO NCCL_SOCKET_IFNAME set by environment to eth0
+b9ea1b7193d6:7835:7850 [1] NCCL INFO NET/Socket : Using [0]eth0:172.17.0.2<0>
+b9ea1b7193d6:7835:7850 [1] NCCL INFO Initialized NET plugin Socket
+b9ea1b7193d6:7835:7850 [1] NCCL INFO Assigned NET plugin Socket to comm
+b9ea1b7193d6:7835:7850 [1] NCCL INFO Using network Socket
+b9ea1b7193d6:7835:7850 [1] NCCL INFO ncclCommInitRankConfig comm 0x5e75b56d0660 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId b1000 commId 0xf374247e6ca81acb - Init START
+b9ea1b7193d6:7835:7850 [1] NCCL INFO RAS client listening socket at ::1<28028>
+b9ea1b7193d6:7834:7847 [0] NCCL INFO RAS client listening socket at ::1<28028>
+b9ea1b7193d6:7835:7850 [1] NCCL INFO Bootstrap timings total 0.000844 (create 0.000032, send 0.000095, recv 0.000305, ring 0.000021, delay 0.000000)
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Bootstrap timings total 0.091284 (create 0.000029, send 0.000101, recv 0.090700, ring 0.000032, delay 0.000000)
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Setting affinity for GPU 0 to 0-23,48-71
+b9ea1b7193d6:7835:7850 [1] NCCL INFO Setting affinity for GPU 1 to 24-47,72-95
+b9ea1b7193d6:7835:7850 [1] NCCL INFO comm 0x5e75b56d0660 rank 1 nRanks 2 nNodes 1 localRanks 2 localRank 1 MNNVL 0
+b9ea1b7193d6:7834:7847 [0] NCCL INFO comm 0x57aee249e890 rank 0 nRanks 2 nNodes 1 localRanks 2 localRank 0 MNNVL 0
+b9ea1b7193d6:7835:7850 [1] NCCL INFO Trees [0] -1/-1/-1->1->0 [1] -1/-1/-1->1->0
+b9ea1b7193d6:7835:7850 [1] NCCL INFO P2P Chunksize set to 131072
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Channel 00/02 : 0 1
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Channel 01/02 : 0 1
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1 [1] 1/-1/-1->0->-1
+b9ea1b7193d6:7834:7847 [0] NCCL INFO P2P Chunksize set to 131072
+b9ea1b7193d6:7835:7850 [1] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so. 
+b9ea1b7193d6:7834:7847 [0] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so. 
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Check P2P Type isAllDirectP2p 0 directMode 0
+b9ea1b7193d6:7835:7854 [1] NCCL INFO [Proxy Service UDS] Device 1 CPU core 30
+b9ea1b7193d6:7834:7856 [0] NCCL INFO [Proxy Service UDS] Device 0 CPU core 4
+b9ea1b7193d6:7835:7853 [1] NCCL INFO [Proxy Service] Device 1 CPU core 26
+b9ea1b7193d6:7834:7855 [0] NCCL INFO [Proxy Service] Device 0 CPU core 1
+b9ea1b7193d6:7835:7850 [1] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 512 | 512
+b9ea1b7193d6:7835:7850 [1] NCCL INFO 2 coll channels, 2 collnet channels, 0 nvls channels, 2 p2p channels, 2 p2p channels per peer
+b9ea1b7193d6:7834:7847 [0] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 512 | 512
+b9ea1b7193d6:7834:7847 [0] NCCL INFO 2 coll channels, 2 collnet channels, 0 nvls channels, 2 p2p channels, 2 p2p channels per peer
+b9ea1b7193d6:7834:7847 [0] NCCL INFO CC Off, workFifoBytes 1048576
+b9ea1b7193d6:7835:7850 [1] NCCL INFO TUNER/Plugin: Could not find: libnccl-tuner.so. Using internal tuner plugin.
+b9ea1b7193d6:7835:7850 [1] NCCL INFO ncclCommInitRankConfig comm 0x5e75b56d0660 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId b1000 commId 0xf374247e6ca81acb - Init COMPLETE
+b9ea1b7193d6:7834:7847 [0] NCCL INFO TUNER/Plugin: Could not find: libnccl-tuner.so. Using internal tuner plugin.
+b9ea1b7193d6:7835:7850 [1] NCCL INFO Init timings - ncclCommInitRankConfig: rank 1 nranks 2 total 0.18 (kernels 0.16, alloc 0.00, bootstrap 0.00, allgathers 0.00, topo 0.01, graphs 0.00, connections 0.00, rest 0.00)
+b9ea1b7193d6:7834:7847 [0] NCCL INFO ncclCommInitRankConfig comm 0x57aee249e890 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId 65000 commId 0xf374247e6ca81acb - Init COMPLETE
+b9ea1b7193d6:7834:7847 [0] NCCL INFO Init timings - ncclCommInitRankConfig: rank 0 nranks 2 total 0.24 (kernels 0.14, alloc 0.00, bootstrap 0.09, allgathers 0.00, topo 0.01, graphs 0.00, connections 0.00, rest 0.00)
+b9ea1b7193d6:7835:7858 [1] NCCL INFO Channel 00 : 1[1] -> 0[0] via SHM/direct/direct
+b9ea1b7193d6:7834:7857 [0] NCCL INFO Channel 00 : 0[0] -> 1[1] via SHM/direct/direct
+b9ea1b7193d6:7835:7858 [1] NCCL INFO Channel 01 : 1[1] -> 0[0] via SHM/direct/direct
+b9ea1b7193d6:7834:7857 [0] NCCL INFO Channel 01 : 0[0] -> 1[1] via SHM/direct/direct
+b9ea1b7193d6:7834:7857 [0] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+b9ea1b7193d6:7835:7858 [1] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+
+正在加载模型配置（从零开始训练）: polymathic-ai/aion-base
+重新初始化模型权重...
+[Rank 1] 正在加载token数据: data/train/
+[Rank 1] 检测到文件夹，读取所有.json文件
+总参数量: 314,255,616
+可训练参数: 314,255,616
+
+正在加载token数据集: data/train/
+[Rank 0] 正在加载token数据: data/train/
+[Rank 0] 检测到文件夹，读取所有.json文件
+[Rank 1] 前5个文件: ['desi10.json', 'DESI-legacysurvey_hdf5_worker_3_matched_astro_data01_tokens.json', 'crossmatch_data_ls_hsc_0212_matched_astro_data037_tokens.json', 'crossmatch_data_ls_hsc_0212_matched_astro_data043_tokens.json', 'crossmatch_data_ls_hsc_0212_matched_astro_data125_tokens.json']
+[Rank 1] 找到 400 个json文件
+[Rank 0] 前5个文件: ['desi10.json', 'DESI-legacysurvey_hdf5_worker_3_matched_astro_data01_tokens.json', 'crossmatch_data_ls_hsc_0212_matched_astro_data037_tokens.json', 'crossmatch_data_ls_hsc_0212_matched_astro_data043_tokens.json', 'crossmatch_data_ls_hsc_0212_matched_astro_data125_tokens.json']
+[Rank 0] 找到 400 个json文件
+[Rank 0] 已达到max_samples限制 (1000 样本)，停止统计
+[Rank 0] 总样本数: 20000
+[Rank 0] 分配到 1 个文件，样本范围: [0, 10000)
+[Rank 0] 读取文件 1/1: desi10.json
+[Rank 0] 读取文件进度: 100.0% (1/1)
+[Rank 1] 已达到max_samples限制 (1000 样本)，停止统计
+[Rank 1] 总样本数: 20000
+[Rank 1] 分配到 1 个文件，样本范围: [10000, 20000)
+[Rank 1] 读取文件 1/1: desi10.json
+[Rank 1] 读取文件进度: 100.0% (1/1)
+[Rank 0] 合并后共 1000 条数据
+[Rank 0] 数据加载完成
+每epoch步数: 7
+总训练步数: 35
+warmup步数: 0
+[Rank 1] 合并后共 1000 条数据
+[Rank 1] 数据加载完成
+wandb: Currently logged in as: wenguangzhang (wenguangzhang-zjlab) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 9kp5k448
+wandb: Tracking run with wandb version 0.22.3
+wandb: Run data is saved locally in /mnt/user/oneastronomy-1218/zwg_project/AION/wandb/run-20260324_122802-9kp5k448
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run 20260324_122747
+wandb: ⭐️ View project at https://wandb.ai/wenguangzhang-zjlab/aion-training
+wandb: 🚀 View run at https://wandb.ai/wenguangzhang-zjlab/aion-training/runs/9kp5k448
+
+开始训练...
+Epochs: 5
+Batch Size (per GPU): 64
+Total Batch Size: 128
+梯度累积步数: 2
+学习率: 0.0001
+输入Token预算: 256
+锚点采样比例: [0.3, 0.9]
+输出Token预算: 128
+Beta分布参数: alpha=1, beta=4
+[训练开始] 内存使用: RSS=1.62GB, 可用=110.94GB, 使用率=11.6%
+[Epoch 1 开始] 内存使用: RSS=1.62GB, 可用=110.94GB, 使用率=11.6%
+Epoch 1/5:   0%|          | 0/15 [00:00<?, ?it/s]Epoch 1/5:   0%|          | 0/15 [00:01<?, ?it/s, loss=9.3175, cur_loss=9.3175, lr=1.00e-04]Epoch 1/5:   7%|▋         | 1/15 [00:01<00:22,  1.57s/it, loss=9.3175, cur_loss=9.3175, lr=1.00e-04]Epoch 1/5:   7%|▋         | 1/15 [00:02<00:22,  1.57s/it, loss=9.3756, cur_loss=9.4337, lr=9.98e-05]Epoch 1/5:  13%|█▎        | 2/15 [00:02<00:15,  1.21s/it, loss=9.3756, cur_loss=9.4337, lr=9.98e-05]Epoch 1/5:  13%|█▎        | 2/15 [00:03<00:15,  1.21s/it, loss=9.9220, cur_loss=11.0147, lr=9.98e-05]Epoch 1/5:  20%|██        | 3/15 [00:03<00:12,  1.02s/it, loss=9.9220, cur_loss=11.0147, lr=9.98e-05]Epoch 1/5:  20%|██        | 3/15 [00:04<00:12,  1.02s/it, loss=10.0663, cur_loss=10.4993, lr=9.92e-05]Epoch 1/5:  27%|██▋       | 4/15 [00:04<00:10,  1.04it/s, loss=10.0663, cur_loss=10.4993, lr=9.92e-05]Epoch 1/5:  27%|██▋       | 4/15 [00:05<00:10,  1.04it/s, loss=10.1774, cur_loss=10.6221, lr=9.92e-05]Epoch 1/5:  33%|███▎      | 5/15 [00:05<00:09,  1.10it/s, loss=10.1774, cur_loss=10.6221, lr=9.92e-05]Epoch 1/5:  33%|███▎      | 5/15 [00:05<00:09,  1.10it/s, loss=10.1343, cur_loss=9.9185, lr=9.82e-05] Epoch 1/5:  40%|████      | 6/15 [00:05<00:08,  1.11it/s, loss=10.1343, cur_loss=9.9185, lr=9.82e-05]Epoch 1/5:  40%|████      | 6/15 [00:06<00:08,  1.11it/s, loss=10.1468, cur_loss=10.2221, lr=9.82e-05]Epoch 1/5:  47%|████▋     | 7/15 [00:06<00:06,  1.15it/s, loss=10.1468, cur_loss=10.2221, lr=9.82e-05]Epoch 1/5:  47%|████▋     | 7/15 [00:07<00:06,  1.15it/s, loss=10.2494, cur_loss=10.9672, lr=9.68e-05]Epoch 1/5:  53%|█████▎    | 8/15 [00:07<00:06,  1.14it/s, loss=10.2494, cur_loss=10.9672, lr=9.68e-05]Epoch 1/5:  53%|█████▎    | 8/15 [00:08<00:06,  1.14it/s, loss=10.5316, cur_loss=12.7893, lr=9.68e-05]Epoch 1/5:  60%|██████    | 9/15 [00:08<00:05,  1.17it/s, loss=10.5316, cur_loss=12.7893, lr=9.68e-05]Epoch 1/5:  60%|██████    | 9/15 [00:09<00:05,  1.17it/s, loss=10.6917, cur_loss=12.1323, lr=9.51e-05]Epoch 1/5:  67%|██████▋   | 10/15 [00:09<00:04,  1.16it/s, loss=10.6917, cur_loss=12.1323, lr=9.51e-05]Epoch 1/5:  67%|██████▋   | 10/15 [00:10<00:04,  1.16it/s, loss=10.8500, cur_loss=12.4332, lr=9.51e-05]Epoch 1/5:  73%|███████▎  | 11/15 [00:10<00:03,  1.19it/s, loss=10.8500, cur_loss=12.4332, lr=9.51e-05]Epoch 1/5:  73%|███████▎  | 11/15 [00:10<00:03,  1.19it/s, loss=10.9027, cur_loss=11.4830, lr=9.30e-05]Epoch 1/5:  80%|████████  | 12/15 [00:10<00:02,  1.17it/s, loss=10.9027, cur_loss=11.4830, lr=9.30e-05]Epoch 1/5:  80%|████████  | 12/15 [00:11<00:02,  1.17it/s, loss=10.8452, cur_loss=10.1548, lr=9.30e-05]Epoch 1/5:  87%|████████▋ | 13/15 [00:11<00:01,  1.19it/s, loss=10.8452, cur_loss=10.1548, lr=9.30e-05]Epoch 1/5:  87%|████████▋ | 13/15 [00:12<00:01,  1.19it/s, loss=10.7805, cur_loss=9.9397, lr=9.05e-05] Epoch 1/5:  93%|█████████▎| 14/15 [00:12<00:00,  1.17it/s, loss=10.7805, cur_loss=9.9397, lr=9.05e-05]Epoch 1/5:  93%|█████████▎| 14/15 [00:13<00:00,  1.17it/s, loss=10.5998, cur_loss=8.0693, lr=9.05e-05]Epoch 1/5: 100%|██████████| 15/15 [00:13<00:00,  1.19it/s, loss=10.5998, cur_loss=8.0693, lr=9.05e-05]Epoch 1/5: 100%|██████████| 15/15 [00:13<00:00,  1.11it/s, loss=10.5998, cur_loss=8.0693, lr=9.05e-05]
+内存使用过高 (11.7%)，执行清理...
+清理后内存: RSS=2.04GB, 可用=110.77GB, 使用率=11.7%
+[Epoch 1 结束] 内存使用: RSS=2.04GB, 可用=110.77GB, 使用率=11.7%
+
+运行验证...
+内存使用过高 (11.7%)，执行清理...
+清理后内存: RSS=2.04GB, 可用=110.77GB, 使用率=11.7%
+Validation:   0%|          | 0/1 [00:00<?, ?it/s]Validation:   0%|          | 0/1 [00:00<?, ?it/s, val_loss=8.1008]Validation: 100%|██████████| 1/1 [00:00<00:00,  2.07it/s, val_loss=8.1008]Validation: 100%|██████████| 1/1 [00:00<00:00,  1.91it/s, val_loss=8.1008]
+验证损失: 8.1008
+[Epoch 2 开始] 内存使用: RSS=2.06GB, 可用=110.79GB, 使用率=11.7%
+Epoch 2/5:   0%|          | 0/15 [00:00<?, ?it/s]Epoch 2/5:   0%|          | 0/15 [00:00<?, ?it/s, loss=7.9990, cur_loss=7.9990, lr=9.05e-05]Epoch 2/5:   7%|▋         | 1/15 [00:00<00:13,  1.02it/s, loss=7.9990, cur_loss=7.9990, lr=9.05e-05]Epoch 2/5:   7%|▋         | 1/15 [00:01<00:13,  1.02it/s, loss=8.0164, cur_loss=8.0338, lr=8.78e-05]Epoch 2/5:  13%|█▎        | 2/15 [00:01<00:12,  1.08it/s, loss=8.0164, cur_loss=8.0338, lr=8.78e-05]Epoch 2/5:  13%|█▎        | 2/15 [00:02<00:12,  1.08it/s, loss=7.9290, cur_loss=7.7542, lr=8.78e-05]Epoch 2/5:  20%|██        | 3/15 [00:02<00:10,  1.15it/s, loss=7.9290, cur_loss=7.7542, lr=8.78e-05]Epoch 2/5:  20%|██        | 3/15 [00:03<00:10,  1.15it/s, loss=8.0258, cur_loss=8.3163, lr=8.47e-05]Epoch 2/5:  27%|██▋       | 4/15 [00:03<00:09,  1.14it/s, loss=8.0258, cur_loss=8.3163, lr=8.47e-05]Epoch 2/5:  27%|██▋       | 4/15 [00:04<00:09,  1.14it/s, loss=8.0012, cur_loss=7.9029, lr=8.47e-05]Epoch 2/5:  33%|███▎      | 5/15 [00:04<00:08,  1.17it/s, loss=8.0012, cur_loss=7.9029, lr=8.47e-05]Epoch 2/5:  33%|███▎      | 5/15 [00:05<00:08,  1.17it/s, loss=7.9818, cur_loss=7.8845, lr=8.14e-05]Epoch 2/5:  40%|████      | 6/15 [00:05<00:07,  1.16it/s, loss=7.9818, cur_loss=7.8845, lr=8.14e-05]Epoch 2/5:  40%|████      | 6/15 [00:06<00:07,  1.16it/s, loss=7.8471, cur_loss=7.0391, lr=8.14e-05]Epoch 2/5:  47%|████▋     | 7/15 [00:06<00:06,  1.18it/s, loss=7.8471, cur_loss=7.0391, lr=8.14e-05]Epoch 2/5:  47%|████▋     | 7/15 [00:06<00:06,  1.18it/s, loss=7.7165, cur_loss=6.8020, lr=7.78e-05]Epoch 2/5:  53%|█████▎    | 8/15 [00:06<00:05,  1.17it/s, loss=7.7165, cur_loss=6.8020, lr=7.78e-05]Epoch 2/5:  53%|█████▎    | 8/15 [00:07<00:05,  1.17it/s, loss=7.6072, cur_loss=6.7334, lr=7.78e-05]Epoch 2/5:  60%|██████    | 9/15 [00:07<00:05,  1.19it/s, loss=7.6072, cur_loss=6.7334, lr=7.78e-05]Epoch 2/5:  60%|██████    | 9/15 [00:08<00:05,  1.19it/s, loss=7.5501, cur_loss=7.0356, lr=7.40e-05]Epoch 2/5:  67%|██████▋   | 10/15 [00:08<00:04,  1.17it/s, loss=7.5501, cur_loss=7.0356, lr=7.40e-05]Epoch 2/5:  67%|██████▋   | 10/15 [00:09<00:04,  1.17it/s, loss=7.5009, cur_loss=7.0093, lr=7.40e-05]Epoch 2/5:  73%|███████▎  | 11/15 [00:09<00:03,  1.20it/s, loss=7.5009, cur_loss=7.0093, lr=7.40e-05]Epoch 2/5:  73%|███████▎  | 11/15 [00:10<00:03,  1.20it/s, loss=7.4615, cur_loss=7.0277, lr=7.00e-05]Epoch 2/5:  80%|████████  | 12/15 [00:10<00:02,  1.18it/s, loss=7.4615, cur_loss=7.0277, lr=7.00e-05]Epoch 2/5:  80%|████████  | 12/15 [00:11<00:02,  1.18it/s, loss=7.4177, cur_loss=6.8917, lr=7.00e-05]Epoch 2/5:  87%|████████▋ | 13/15 [00:11<00:01,  1.19it/s, loss=7.4177, cur_loss=6.8917, lr=7.00e-05]Epoch 2/5:  87%|████████▋ | 13/15 [00:12<00:01,  1.19it/s, loss=7.3690, cur_loss=6.7360, lr=6.58e-05]Epoch 2/5:  93%|█████████▎| 14/15 [00:12<00:00,  1.18it/s, loss=7.3690, cur_loss=6.7360, lr=6.58e-05]Epoch 2/5:  93%|█████████▎| 14/15 [00:12<00:00,  1.18it/s, loss=7.3035, cur_loss=6.3874, lr=6.58e-05]Epoch 2/5: 100%|██████████| 15/15 [00:12<00:00,  1.19it/s, loss=7.3035, cur_loss=6.3874, lr=6.58e-05]Epoch 2/5: 100%|██████████| 15/15 [00:12<00:00,  1.16it/s, loss=7.3035, cur_loss=6.3874, lr=6.58e-05]
+内存使用过高 (11.6%)，执行清理...
+清理后内存: RSS=2.06GB, 可用=110.94GB, 使用率=11.6%
+[Epoch 2 结束] 内存使用: RSS=2.06GB, 可用=110.94GB, 使用率=11.6%
+
+运行验证...
+内存使用过高 (11.6%)，执行清理...
+清理后内存: RSS=2.06GB, 可用=110.95GB, 使用率=11.6%
+Validation:   0%|          | 0/1 [00:00<?, ?it/s]Validation:   0%|          | 0/1 [00:00<?, ?it/s, val_loss=6.4289]Validation: 100%|██████████| 1/1 [00:00<00:00,  2.08it/s, val_loss=6.4289]Validation: 100%|██████████| 1/1 [00:00<00:00,  1.92it/s, val_loss=6.4289]
+验证损失: 6.4289
+[Epoch 3 开始] 内存使用: RSS=2.06GB, 可用=110.97GB, 使用率=11.6%
+Epoch 3/5:   0%|          | 0/15 [00:00<?, ?it/s]Epoch 3/5:   0%|          | 0/15 [00:00<?, ?it/s, loss=6.6703, cur_loss=6.6703, lr=6.58e-05]Epoch 3/5:   7%|▋         | 1/15 [00:00<00:13,  1.02it/s, loss=6.6703, cur_loss=6.6703, lr=6.58e-05]Epoch 3/5:   7%|▋         | 1/15 [00:01<00:13,  1.02it/s, loss=6.5733, cur_loss=6.4764, lr=6.15e-05]Epoch 3/5:  13%|█▎        | 2/15 [00:01<00:12,  1.08it/s, loss=6.5733, cur_loss=6.4764, lr=6.15e-05]Epoch 3/5:  13%|█▎        | 2/15 [00:02<00:12,  1.08it/s, loss=6.5067, cur_loss=6.3735, lr=6.15e-05]Epoch 3/5:  20%|██        | 3/15 [00:02<00:10,  1.15it/s, loss=6.5067, cur_loss=6.3735, lr=6.15e-05]Epoch 3/5:  20%|██        | 3/15 [00:03<00:10,  1.15it/s, loss=6.4886, cur_loss=6.4344, lr=5.71e-05]Epoch 3/5:  27%|██▋       | 4/15 [00:03<00:09,  1.14it/s, loss=6.4886, cur_loss=6.4344, lr=5.71e-05]Epoch 3/5:  27%|██▋       | 4/15 [00:04<00:09,  1.14it/s, loss=6.4929, cur_loss=6.5099, lr=5.71e-05]Epoch 3/5:  33%|███▎      | 5/15 [00:04<00:08,  1.17it/s, loss=6.4929, cur_loss=6.5099, lr=5.71e-05]Epoch 3/5:  33%|███▎      | 5/15 [00:05<00:08,  1.17it/s, loss=6.4682, cur_loss=6.3447, lr=5.27e-05]Epoch 3/5:  40%|████      | 6/15 [00:05<00:07,  1.16it/s, loss=6.4682, cur_loss=6.3447, lr=5.27e-05]Epoch 3/5:  40%|████      | 6/15 [00:06<00:07,  1.16it/s, loss=6.4773, cur_loss=6.5318, lr=5.27e-05]Epoch 3/5:  47%|████▋     | 7/15 [00:06<00:06,  1.19it/s, loss=6.4773, cur_loss=6.5318, lr=5.27e-05]Epoch 3/5:  47%|████▋     | 7/15 [00:06<00:06,  1.19it/s, loss=6.4692, cur_loss=6.4128, lr=4.83e-05]Epoch 3/5:  53%|█████▎    | 8/15 [00:06<00:05,  1.17it/s, loss=6.4692, cur_loss=6.4128, lr=4.83e-05]Epoch 3/5:  53%|█████▎    | 8/15 [00:07<00:05,  1.17it/s, loss=6.4175, cur_loss=6.0042, lr=4.83e-05]Epoch 3/5:  60%|██████    | 9/15 [00:07<00:05,  1.20it/s, loss=6.4175, cur_loss=6.0042, lr=4.83e-05]Epoch 3/5:  60%|██████    | 9/15 [00:08<00:05,  1.20it/s, loss=6.4249, cur_loss=6.4916, lr=4.39e-05]Epoch 3/5:  67%|██████▋   | 10/15 [00:08<00:04,  1.18it/s, loss=6.4249, cur_loss=6.4916, lr=4.39e-05]Epoch 3/5:  67%|██████▋   | 10/15 [00:09<00:04,  1.18it/s, loss=6.3951, cur_loss=6.0967, lr=4.39e-05]Epoch 3/5:  73%|███████▎  | 11/15 [00:09<00:03,  1.20it/s, loss=6.3951, cur_loss=6.0967, lr=4.39e-05]Epoch 3/5:  73%|███████▎  | 11/15 [00:10<00:03,  1.20it/s, loss=6.3794, cur_loss=6.2072, lr=3.95e-05]Epoch 3/5:  80%|████████  | 12/15 [00:10<00:02,  1.17it/s, loss=6.3794, cur_loss=6.2072, lr=3.95e-05]Epoch 3/5:  80%|████████  | 12/15 [00:11<00:02,  1.17it/s, loss=6.3630, cur_loss=6.1655, lr=3.95e-05]Epoch 3/5:  87%|████████▋ | 13/15 [00:11<00:01,  1.20it/s, loss=6.3630, cur_loss=6.1655, lr=3.95e-05]Epoch 3/5:  87%|████████▋ | 13/15 [00:11<00:01,  1.20it/s, loss=6.3645, cur_loss=6.3837, lr=3.52e-05]Epoch 3/5:  93%|█████████▎| 14/15 [00:11<00:00,  1.18it/s, loss=6.3645, cur_loss=6.3837, lr=3.52e-05]Epoch 3/5:  93%|█████████▎| 14/15 [00:12<00:00,  1.18it/s, loss=6.3602, cur_loss=6.3011, lr=3.52e-05]Epoch 3/5: 100%|██████████| 15/15 [00:12<00:00,  1.20it/s, loss=6.3602, cur_loss=6.3011, lr=3.52e-05]Epoch 3/5: 100%|██████████| 15/15 [00:12<00:00,  1.17it/s, loss=6.3602, cur_loss=6.3011, lr=3.52e-05]
+内存使用过高 (11.5%)，执行清理...
+清理后内存: RSS=2.06GB, 可用=111.01GB, 使用率=11.6%
+[Epoch 3 结束] 内存使用: RSS=2.06GB, 可用=111.01GB, 使用率=11.6%
+
+运行验证...
+内存使用过高 (11.6%)，执行清理...
+清理后内存: RSS=2.06GB, 可用=111.01GB, 使用率=11.6%
+Validation:   0%|          | 0/1 [00:00<?, ?it/s]Validation:   0%|          | 0/1 [00:00<?, ?it/s, val_loss=6.1207]Validation: 100%|██████████| 1/1 [00:00<00:00,  2.08it/s, val_loss=6.1207]Validation: 100%|██████████| 1/1 [00:00<00:00,  1.91it/s, val_loss=6.1207]
+验证损失: 6.1207
+[Epoch 4 开始] 内存使用: RSS=2.06GB, 可用=111.08GB, 使用率=11.5%
+Epoch 4/5:   0%|          | 0/15 [00:00<?, ?it/s]Epoch 4/5:   0%|          | 0/15 [00:00<?, ?it/s, loss=6.0581, cur_loss=6.0581, lr=3.52e-05]Epoch 4/5:   7%|▋         | 1/15 [00:00<00:13,  1.00it/s, loss=6.0581, cur_loss=6.0581, lr=3.52e-05]Epoch 4/5:   7%|▋         | 1/15 [00:01<00:13,  1.00it/s, loss=6.1263, cur_loss=6.1946, lr=3.10e-05]Epoch 4/5:  13%|█▎        | 2/15 [00:01<00:12,  1.07it/s, loss=6.1263, cur_loss=6.1946, lr=3.10e-05]Epoch 4/5:  13%|█▎        | 2/15 [00:02<00:12,  1.07it/s, loss=6.1155, cur_loss=6.0938, lr=3.10e-05]Epoch 4/5:  20%|██        | 3/15 [00:02<00:10,  1.14it/s, loss=6.1155, cur_loss=6.0938, lr=3.10e-05]Epoch 4/5:  20%|██        | 3/15 [00:03<00:10,  1.14it/s, loss=6.1419, cur_loss=6.2211, lr=2.70e-05]Epoch 4/5:  27%|██▋       | 4/15 [00:03<00:09,  1.13it/s, loss=6.1419, cur_loss=6.2211, lr=2.70e-05]Epoch 4/5:  27%|██▋       | 4/15 [00:04<00:09,  1.13it/s, loss=6.1493, cur_loss=6.1791, lr=2.70e-05]Epoch 4/5:  33%|███▎      | 5/15 [00:04<00:08,  1.17it/s, loss=6.1493, cur_loss=6.1791, lr=2.70e-05]Epoch 4/5:  33%|███▎      | 5/15 [00:05<00:08,  1.17it/s, loss=6.1625, cur_loss=6.2283, lr=2.32e-05]Epoch 4/5:  40%|████      | 6/15 [00:05<00:07,  1.16it/s, loss=6.1625, cur_loss=6.2283, lr=2.32e-05]Epoch 4/5:  40%|████      | 6/15 [00:06<00:07,  1.16it/s, loss=6.1391, cur_loss=5.9986, lr=2.32e-05]Epoch 4/5:  47%|████▋     | 7/15 [00:06<00:06,  1.18it/s, loss=6.1391, cur_loss=5.9986, lr=2.32e-05]Epoch 4/5:  47%|████▋     | 7/15 [00:06<00:06,  1.18it/s, loss=6.1383, cur_loss=6.1330, lr=1.96e-05]Epoch 4/5:  53%|█████▎    | 8/15 [00:06<00:06,  1.16it/s, loss=6.1383, cur_loss=6.1330, lr=1.96e-05]Epoch 4/5:  53%|█████▎    | 8/15 [00:07<00:06,  1.16it/s, loss=6.1270, cur_loss=6.0368, lr=1.96e-05]Epoch 4/5:  60%|██████    | 9/15 [00:07<00:05,  1.19it/s, loss=6.1270, cur_loss=6.0368, lr=1.96e-05]Epoch 4/5:  60%|██████    | 9/15 [00:08<00:05,  1.19it/s, loss=6.1165, cur_loss=6.0212, lr=1.63e-05]Epoch 4/5:  67%|██████▋   | 10/15 [00:08<00:04,  1.17it/s, loss=6.1165, cur_loss=6.0212, lr=1.63e-05]Epoch 4/5:  67%|██████▋   | 10/15 [00:09<00:04,  1.17it/s, loss=6.1243, cur_loss=6.2027, lr=1.63e-05]Epoch 4/5:  73%|███████▎  | 11/15 [00:09<00:03,  1.19it/s, loss=6.1243, cur_loss=6.2027, lr=1.63e-05]Epoch 4/5:  73%|███████▎  | 11/15 [00:10<00:03,  1.19it/s, loss=6.1128, cur_loss=5.9865, lr=1.32e-05]Epoch 4/5:  80%|████████  | 12/15 [00:10<00:02,  1.17it/s, loss=6.1128, cur_loss=5.9865, lr=1.32e-05]Epoch 4/5:  80%|████████  | 12/15 [00:11<00:02,  1.17it/s, loss=6.0971, cur_loss=5.9084, lr=1.32e-05]Epoch 4/5:  87%|████████▋ | 13/15 [00:11<00:01,  1.19it/s, loss=6.0971, cur_loss=5.9084, lr=1.32e-05]Epoch 4/5:  87%|████████▋ | 13/15 [00:12<00:01,  1.19it/s, loss=6.0790, cur_loss=5.8438, lr=1.05e-05]Epoch 4/5:  93%|█████████▎| 14/15 [00:12<00:00,  1.17it/s, loss=6.0790, cur_loss=5.8438, lr=1.05e-05]Epoch 4/5:  93%|█████████▎| 14/15 [00:12<00:00,  1.17it/s, loss=6.0723, cur_loss=5.9781, lr=1.05e-05]Epoch 4/5: 100%|██████████| 15/15 [00:12<00:00,  1.20it/s, loss=6.0723, cur_loss=5.9781, lr=1.05e-05]Epoch 4/5: 100%|██████████| 15/15 [00:12<00:00,  1.16it/s, loss=6.0723, cur_loss=5.9781, lr=1.05e-05]
+内存使用过高 (11.5%)，执行清理...
+清理后内存: RSS=2.06GB, 可用=111.10GB, 使用率=11.5%
+[Epoch 4 结束] 内存使用: RSS=2.06GB, 可用=111.10GB, 使用率=11.5%
+
+运行验证...
+内存使用过高 (11.5%)，执行清理...
+清理后内存: RSS=2.06GB, 可用=111.10GB, 使用率=11.5%
+Validation:   0%|          | 0/1 [00:00<?, ?it/s]Validation:   0%|          | 0/1 [00:00<?, ?it/s, val_loss=5.9387]Validation: 100%|██████████| 1/1 [00:00<00:00,  2.04it/s, val_loss=5.9387]Validation: 100%|██████████| 1/1 [00:00<00:00,  1.88it/s, val_loss=5.9387]
+验证损失: 5.9387
+[Epoch 5 开始] 内存使用: RSS=2.06GB, 可用=111.10GB, 使用率=11.5%
+Epoch 5/5:   0%|          | 0/15 [00:00<?, ?it/s]Epoch 5/5:   0%|          | 0/15 [00:01<?, ?it/s, loss=6.0863, cur_loss=6.0863, lr=1.05e-05]Epoch 5/5:   7%|▋         | 1/15 [00:01<00:14,  1.03s/it, loss=6.0863, cur_loss=6.0863, lr=1.05e-05]Epoch 5/5:   7%|▋         | 1/15 [00:01<00:14,  1.03s/it, loss=6.0655, cur_loss=6.0447, lr=8.01e-06]Epoch 5/5:  13%|█▎        | 2/15 [00:01<00:12,  1.05it/s, loss=6.0655, cur_loss=6.0447, lr=8.01e-06]Epoch 5/5:  13%|█▎        | 2/15 [00:02<00:12,  1.05it/s, loss=6.0263, cur_loss=5.9478, lr=8.01e-06]Epoch 5/5:  20%|██        | 3/15 [00:02<00:10,  1.13it/s, loss=6.0263, cur_loss=5.9478, lr=8.01e-06]Epoch 5/5:  20%|██        | 3/15 [00:03<00:10,  1.13it/s, loss=6.0180, cur_loss=5.9933, lr=5.90e-06]Epoch 5/5:  27%|██▋       | 4/15 [00:03<00:09,  1.13it/s, loss=6.0180, cur_loss=5.9933, lr=5.90e-06]Epoch 5/5:  27%|██▋       | 4/15 [00:04<00:09,  1.13it/s, loss=5.9891, cur_loss=5.8732, lr=5.90e-06]Epoch 5/5:  33%|███▎      | 5/15 [00:04<00:08,  1.17it/s, loss=5.9891, cur_loss=5.8732, lr=5.90e-06]Epoch 5/5:  33%|███▎      | 5/15 [00:05<00:08,  1.17it/s, loss=5.9514, cur_loss=5.7628, lr=4.16e-06]Epoch 5/5:  40%|████      | 6/15 [00:05<00:07,  1.15it/s, loss=5.9514, cur_loss=5.7628, lr=4.16e-06]Epoch 5/5:  40%|████      | 6/15 [00:06<00:07,  1.15it/s, loss=5.9624, cur_loss=6.0288, lr=4.16e-06]Epoch 5/5:  47%|████▋     | 7/15 [00:06<00:06,  1.18it/s, loss=5.9624, cur_loss=6.0288, lr=4.16e-06]Epoch 5/5:  47%|████▋     | 7/15 [00:07<00:06,  1.18it/s, loss=5.9539, cur_loss=5.8944, lr=2.78e-06]Epoch 5/5:  53%|█████▎    | 8/15 [00:07<00:06,  1.16it/s, loss=5.9539, cur_loss=5.8944, lr=2.78e-06]Epoch 5/5:  53%|█████▎    | 8/15 [00:07<00:06,  1.16it/s, loss=5.9642, cur_loss=6.0465, lr=2.78e-06]Epoch 5/5:  60%|██████    | 9/15 [00:07<00:05,  1.19it/s, loss=5.9642, cur_loss=6.0465, lr=2.78e-06]Epoch 5/5:  60%|██████    | 9/15 [00:08<00:05,  1.19it/s, loss=5.9769, cur_loss=6.0913, lr=1.80e-06]Epoch 5/5:  67%|██████▋   | 10/15 [00:08<00:04,  1.17it/s, loss=5.9769, cur_loss=6.0913, lr=1.80e-06]Epoch 5/5:  67%|██████▋   | 10/15 [00:09<00:04,  1.17it/s, loss=5.9917, cur_loss=6.1397, lr=1.80e-06]Epoch 5/5:  73%|███████▎  | 11/15 [00:09<00:03,  1.20it/s, loss=5.9917, cur_loss=6.1397, lr=1.80e-06]Epoch 5/5:  73%|███████▎  | 11/15 [00:10<00:03,  1.20it/s, loss=5.9680, cur_loss=5.7079, lr=1.20e-06]Epoch 5/5:  80%|████████  | 12/15 [00:10<00:02,  1.18it/s, loss=5.9680, cur_loss=5.7079, lr=1.20e-06]Epoch 5/5:  80%|████████  | 12/15 [00:11<00:02,  1.18it/s, loss=5.9722, cur_loss=6.0225, lr=1.20e-06]Epoch 5/5:  87%|████████▋ | 13/15 [00:11<00:01,  1.19it/s, loss=5.9722, cur_loss=6.0225, lr=1.20e-06]Epoch 5/5:  87%|████████▋ | 13/15 [00:12<00:01,  1.19it/s, loss=5.9720, cur_loss=5.9689, lr=1.00e-06]Epoch 5/5:  93%|█████████▎| 14/15 [00:12<00:00,  1.17it/s, loss=5.9720, cur_loss=5.9689, lr=1.00e-06]Epoch 5/5:  93%|█████████▎| 14/15 [00:12<00:00,  1.17it/s, loss=5.9638, cur_loss=5.8492, lr=1.00e-06]Epoch 5/5: 100%|██████████| 15/15 [00:12<00:00,  1.20it/s, loss=5.9638, cur_loss=5.8492, lr=1.00e-06]Epoch 5/5: 100%|██████████| 15/15 [00:12<00:00,  1.16it/s, loss=5.9638, cur_loss=5.8492, lr=1.00e-06]
+内存使用过高 (11.5%)，执行清理...
+清理后内存: RSS=2.06GB, 可用=111.12GB, 使用率=11.5%
+[Epoch 5 结束] 内存使用: RSS=2.06GB, 可用=111.12GB, 使用率=11.5%
+
+运行验证...
+内存使用过高 (11.5%)，执行清理...
+清理后内存: RSS=2.06GB, 可用=111.12GB, 使用率=11.5%
+Validation:   0%|          | 0/1 [00:00<?, ?it/s]Validation:   0%|          | 0/1 [00:00<?, ?it/s, val_loss=5.9223]Validation: 100%|██████████| 1/1 [00:00<00:00,  2.07it/s, val_loss=5.9223]Validation: 100%|██████████| 1/1 [00:00<00:00,  1.89it/s, val_loss=5.9223]
+验证损失: 5.9223
+
+================================================================================
+训练完成!
+最佳验证损失: 5.9223
+总训练步数: 35
+输出目录: outputs/aion_training/20260324_122747
+================================================================================
+wandb: updating run metadata
+wandb: updating run metadata; uploading output.log; uploading wandb-summary.json
+wandb: uploading output.log; uploading config.yaml
+wandb: uploading summary, console lines 67-73
+wandb: 
+wandb: Run history:
+wandb:                    train/epoch ▁▁▁▁▁▁▁▃▃▃▃▃▃▃▅▅▅▅▅▅▅▆▆▆▆▆▆▆███████
+wandb:                 train/loss_avg ▆▇▇▇███▄▄▄▃▃▃▃▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:             train/loss_instant ▅▆▆▇█▇▆▄▄▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁
+wandb:   train/loss_tok_spectrum_desi ▆███▇▇▅▄▄▃▃▃▂▂▂▂▂▂▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:               train/loss_tok_z ▅▅▅▆█▇▆▃▄▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▂▁▁
+wandb:                       train/lr ██████▇▇▇▇▆▆▆▆▅▅▅▄▄▄▃▃▃▃▂▂▂▂▁▁▁▁▁▁▁
+wandb:                     train/step ▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇███
+wandb:                   val/val_loss █▃▂▁▁
+wandb: val/val_loss_tok_spectrum_desi █▂▂▁▁
+wandb:             val/val_loss_tok_z █▃▂▁▁
+wandb: 
+wandb: Run summary:
+wandb:                    train/epoch 5
+wandb:                 train/loss_avg 5.972
+wandb:             train/loss_instant 5.96886
+wandb:   train/loss_tok_spectrum_desi 7.16884
+wandb:               train/loss_tok_z 4.76888
+wandb:                       train/lr 0.0
+wandb:                     train/step 35
+wandb:                   val/val_loss 5.92232
+wandb: val/val_loss_tok_spectrum_desi 7.14373
+wandb:             val/val_loss_tok_z 4.70092
+wandb: 
+wandb: 🚀 View run 20260324_122747 at: https://wandb.ai/wenguangzhang-zjlab/aion-training/runs/9kp5k448
+wandb: ⭐️ View project at: https://wandb.ai/wenguangzhang-zjlab/aion-training
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260324_122802-9kp5k448/logs
+b9ea1b7193d6:7835:7835 [1] NCCL INFO comm 0x5e75b56d0660 rank 1 nranks 2 cudaDev 1 busId b1000 - Destroy COMPLETE
+b9ea1b7193d6:7834:7834 [0] NCCL INFO comm 0x57aee249e890 rank 0 nranks 2 cudaDev 0 busId 65000 - Destroy COMPLETE
