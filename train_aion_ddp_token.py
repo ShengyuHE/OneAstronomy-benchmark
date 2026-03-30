@@ -28,6 +28,7 @@ from pathlib import Path
 from contextlib import nullcontext
 import json
 import random
+import time
 
 import torch
 import torch.nn as nn
@@ -37,7 +38,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import Dataset, DataLoader, IterableDataset, Sampler
 from torch.utils.data.distributed import DistributedSampler
 from torch.optim import AdamW
-from torch.optim.lr_scheduler import CosineAnnealingLR, OneCycleLR, LinearLR, SequentialLR
+from torch.optim.lr_scheduler import CosineAnnealingLR, OneCycleLR, LambdaLR
 from torch.amp import autocast, GradScaler
 
 import numpy as np
@@ -84,6 +85,7 @@ TOKEN_KEYS = [
 ]
 
 # AION imports
+# Ensure imports resolve to the local AION package in this repo.
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from aion import AION
 from aion.codecs import CodecManager
@@ -150,7 +152,7 @@ def log_memory_usage(prefix: str = "", rank: int = 0):
     """记录内存使用情况"""
     mem = get_memory_usage()
     if rank == 0:
-        print(f"[{prefix}] 内存使用: RSS={mem['rss']:.2f}GB, 可用={mem['available']:.2f}GB, 使用率={mem['percent']:.1f}%")
+        print(f"[{prefix}] Memory usage: RSS={mem['rss']:.2f}GB, Available={mem['available']:.2f}GB, Usage={mem['percent']:.1f}%")
 
 def cleanup_memory(force: bool = False, rank: int = 0, threshold_percent: float = 80.0):
     """清理内存
@@ -163,7 +165,7 @@ def cleanup_memory(force: bool = False, rank: int = 0, threshold_percent: float 
     mem = get_memory_usage()
     if force or mem['percent'] > threshold_percent:
         if rank == 0:
-            print(f"内存使用过高 ({mem['percent']:.1f}%)，执行清理...")
+            print(f"Memory usage is high ({mem['percent']:.1f}%), cleaning up...")
         
         # 清理Python垃圾回收
         import gc
@@ -175,7 +177,7 @@ def cleanup_memory(force: bool = False, rank: int = 0, threshold_percent: float 
         
         if rank == 0:
             new_mem = get_memory_usage()
-            print(f"清理后内存: RSS={new_mem['rss']:.2f}GB, 可用={new_mem['available']:.2f}GB, 使用率={new_mem['percent']:.1f}%")
+            print(f"Memory after cleanup: RSS={new_mem['rss']:.2f}GB, Available={new_mem['available']:.2f}GB, Usage={new_mem['percent']:.1f}%")
 
 def setup_distributed():
     """初始化分布式训练环境"""
@@ -203,6 +205,30 @@ def cleanup_distributed():
     """清理分布式训练环境"""
     if dist.is_initialized():
         dist.destroy_process_group()
+
+
+def synchronize_device():
+    """同步当前设备，确保计时包含完整CUDA执行时间"""
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+
+
+def _distributed_reduce_scalar(value: float, op=dist.ReduceOp.SUM) -> float:
+    """对标量做分布式归约；未初始化分布式时直接返回"""
+    if not (dist.is_available() and dist.is_initialized()):
+        return value
+    tensor = torch.tensor(value, dtype=torch.float64, device="cuda" if torch.cuda.is_available() else "cpu")
+    dist.all_reduce(tensor, op=op)
+    return float(tensor.item())
+
+
+def _next_batch(data_iter, data_loader):
+    """获取下一个batch；到达末尾时自动重建迭代器。"""
+    try:
+        return next(data_iter), data_iter
+    except StopIteration:
+        data_iter = iter(data_loader)
+        return next(data_iter), data_iter
 
 
 def set_seed(seed: int, rank: int = 0):
@@ -264,7 +290,7 @@ def count_json_samples(file_path: str, rank: int = 0) -> int:
                 mm.close()
         
     except Exception as e:
-        print(f"[Rank {rank}] [ERROR] 统计样本数失败: {file_path}, 错误: {e}")
+        print(f"[Rank {rank}] [ERROR] Failed to count samples: {file_path}, error: {e}")
         sample_count = 0
     finally:
         # 手动触发垃圾回收
@@ -304,12 +330,10 @@ class AIONDataset(Dataset):
         self.lazy_loading = lazy_loading
         
         # 加载JSON token数据（支持文件或文件夹）
-        print(f"[Rank {rank}] 正在加载token数据: {data_path}")
+        print(f"[Rank {rank}] Loading data from: {data_path}")
         path_obj = Path(data_path)
         
         if path_obj.is_file():
-            # 单个JSON文件
-            print(f"[Rank {rank}] 检测到单个文件")
             with open(data_path, 'r') as f:
                 data = json.load(f)
                 if not isinstance(data, list):
@@ -320,19 +344,17 @@ class AIONDataset(Dataset):
                 self.data = data[start_idx:end_idx]
                 self.groups = ["__single__"] * len(self.data)
         elif path_obj.is_dir():
-            # 文件夹：读取所有JSON文件
-            print(f"[Rank {rank}] 检测到文件夹，读取所有.json文件")
             json_files = sorted(list(path_obj.rglob("*.json")))
             
             # 打乱文件列表（确保所有rank结果一致）
             random.seed(42)  # 固定种子确保分布式训练一致性
             random.shuffle(json_files)
-            print(f"[Rank {rank}] 前5个文件: {[os.path.basename(f) for f in json_files[:5]]}")
             
             if not json_files:
                 raise ValueError(f"在文件夹 {data_path} 中未找到任何.json文件")
             
-            print(f"[Rank {rank}] 找到 {len(json_files)} 个json文件")
+            if rank == 0:
+                print(f"Discovered {len(json_files)} json files")
             
             # 第一步：统计所有文件的样本数
             file_sample_counts = []
@@ -343,14 +365,10 @@ class AIONDataset(Dataset):
                 try:
                     # 检查是否达到max_samples
                     if self.max_samples and cumulative_samples >= self.max_samples:
-                        print(f"[Rank {rank}] 已达到max_samples限制 ({self.max_samples} 样本)，停止统计")
+                        print(f"[Rank {rank}] Reached max_samples limit ({self.max_samples} samples), stopping count")
                         # 填充剩余文件的样本数为0
                         file_sample_counts.extend([0] * (total_files - i))
                         break
-                    
-                    # 每隔5个文件打印一次详细信息
-                    if (i + 1) % 10 == 0:
-                        print(f"[Rank {rank}] 正在处理文件 {i+1}/{total_files}: {os.path.basename(jf)}")
                     
                     # 使用内存高效的函数计算样本数
                     sample_count = count_json_samples(jf, self.rank)
@@ -358,12 +376,12 @@ class AIONDataset(Dataset):
                     file_sample_counts.append(sample_count)
                     cumulative_samples += sample_count
                 except Exception as e:
-                    print(f"[Rank {rank}] 读取文件 {jf} 时出错: {e}")
+                    print(f"[Rank {rank}] Error reading file {jf}: {e}")
                     file_sample_counts.append(0)
             
             # 第二步：计算总样本数
             total_samples = sum(file_sample_counts)
-            print(f"[Rank {rank}] 总样本数: {total_samples}")
+            print(f"[Rank {rank}] Total samples: {total_samples}")
             
             # 第三步：计算每个rank应该分配的样本数范围
             samples_per_rank = total_samples // world_size
@@ -396,7 +414,7 @@ class AIONDataset(Dataset):
                 if current_sample >= end_sample:
                     break
             
-            print(f"[Rank {rank}] 分配到 {len(assigned_files)} 个文件，样本范围: [{start_sample}, {end_sample})")
+            print(f"[Rank {rank}] Assigned {len(assigned_files)} files, sample range: [{start_sample}, {end_sample})")
             
             if self.lazy_loading:
                 # 惰性加载：只存储文件路径和样本范围
@@ -427,7 +445,7 @@ class AIONDataset(Dataset):
                     self.groups = self.groups[:max_samples]
                     self.total_samples = len(self.sample_to_file)
                 
-                print(f"[Rank {rank}] 惰性加载模式，共 {self.total_samples} 条数据")
+                print(f"[Rank {rank}] Assigned {self.total_samples} records (lazy loading)")
             else:
                 # 传统加载方式：使用内存映射技术加载数据
                 # 读取并合并分配的JSON文件
@@ -437,14 +455,6 @@ class AIONDataset(Dataset):
                 total_assigned = len(assigned_files)
                 
                 for i, (jf, (rank_file_start, rank_file_end)) in enumerate(zip(assigned_files, file_sample_ranges)):
-                    # 打印文件读取信息和进度
-                    print(f"[Rank {rank}] 读取文件 {i+1}/{total_assigned}: {os.path.basename(jf)}")
-                    
-                    # 打印百分比进度
-                    if (i + 1) % 5 == 0 or (i + 1) == total_assigned:
-                        progress = (i + 1) / total_assigned * 100
-                        print(f"[Rank {rank}] 读取文件进度: {progress:.1f}% ({i+1}/{total_assigned})")
-                    
                     try:
                         import mmap
                         import json
@@ -477,7 +487,7 @@ class AIONDataset(Dataset):
                         gc.collect()
                         
                     except Exception as e:
-                        print(f"[Rank {rank}] 读取文件 {jf} 时出错: {e}")
+                        print(f"[Rank {rank}] Error reading file {jf}: {e}")
                 
                 self.data = all_data
                 self.groups = all_groups
@@ -487,14 +497,14 @@ class AIONDataset(Dataset):
                     self.data = self.data[:max_samples]
                     self.groups = self.groups[:max_samples]
                 
-                print(f"[Rank {rank}] 合并后共 {len(self.data)} 条数据")
+                print(f"[Rank {rank}] Loaded {len(self.data)} records")
         else:
             raise ValueError(f"路径不存在或无效: {data_path}")
         
         if not hasattr(self, 'data') and not hasattr(self, 'sample_to_file'):
             raise ValueError(f"在路径 {data_path} 中未找到任何有效数据")
         
-        print(f"[Rank {rank}] 数据加载完成")
+        print(f"[Rank {rank}] Data ready")
         
     def __len__(self):
         if hasattr(self, 'total_samples'):
@@ -859,10 +869,10 @@ class AIONTrainer:
         grad_accum_steps: int = 1,
         use_amp: bool = True,
         max_grad_norm: float = 1.0,
-        input_budget: int = 256,
+        input_budget: int = 512,
         anchor_ratio_min: float = 0.3,
         anchor_ratio_max: float = 0.7,
-        output_budget: int = 128,
+        output_budget: int = 256,
         beta_alpha: float = 0.5,
         beta_beta: float = 2.0,
     ):
@@ -1338,6 +1348,7 @@ class AIONTrainer:
         
         # 在梯度累积完成后更新参数
         if not is_accumulating:
+            optimizer_stepped = False
             if self.scaler:
                 self.scaler.unscale_(self.optimizer)
             
@@ -1349,14 +1360,19 @@ class AIONTrainer:
                 )
             
             if self.scaler:
+                scale_before = self.scaler.get_scale()
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
+                optimizer_stepped = self.scaler.get_scale() >= scale_before
             else:
                 self.optimizer.step()
+                optimizer_stepped = True
             
-            self.scheduler.step()
+            if optimizer_stepped:
+                self.scheduler.step()
             self.optimizer.zero_grad(set_to_none=True)
-            self.global_step += 1
+            if optimizer_stepped:
+                self.global_step += 1
         
         # 清理内存
         del input_tokens, target_tokens, input_masks, target_masks, masked_input, input_mask_2d, target_mask_2d, logits, loss
@@ -1551,7 +1567,7 @@ def train(args):
     
     if is_main:
         print("=" * 80)
-        print("AION 分布式训练")
+        print("AION Distributed Training")
         print("=" * 80)
         print(f"World Size: {dist_info['world_size']}")
         print(f"Rank: {dist_info['rank']}")
@@ -1577,7 +1593,7 @@ def train(args):
         with open(os.path.join(output_dir, "config.json"), "w") as f:
             json.dump(config_data, f, indent=2)
         
-        print(f"输出目录: {output_dir}")
+        print(f"Output directory: {output_dir}")
     else:
         output_dir = None
     
@@ -1589,7 +1605,7 @@ def train(args):
     
     # 3. 加载模型
     if is_main:
-        print(f"\n正在加载模型配置（从零开始训练）: {args.model_name}")
+        print(f"\nLoading model configuration (training from scratch): {args.model_name}")
     
     # 加载预训练模型结构，然后重新初始化权重
     model = AION.from_pretrained(
@@ -1599,7 +1615,7 @@ def train(args):
     
     # 重新初始化所有权重（从零开始训练）
     if is_main:
-        print("重新初始化模型权重...")
+        print("Reinitializing model weights...")
     
     def init_weights(m):
         if isinstance(m, (nn.Linear, nn.Conv1d, nn.Conv2d)):
@@ -1628,14 +1644,14 @@ def train(args):
     if is_main:
         base_model = model.module if isinstance(model, DDP) else model
         total_params, trainable_params = count_parameters(base_model)
-        print(f"总参数量: {total_params:,}")
-        print(f"可训练参数: {trainable_params:,}")
+        print(f"Total parameters: {total_params:,}")
+        print(f"Trainable parameters: {trainable_params:,}")
     
     # 注意：使用预编码的token数据，不需要codec_manager
     
     # 4. 创建数据加载器
     if is_main:
-        print(f"\n正在加载token数据集: {args.data_path}")
+        print(f"\nLoading token dataset: {args.data_path}")
     
     train_dataset = AIONDataset(
         data_path=args.data_path,
@@ -1721,9 +1737,9 @@ def train(args):
     # 确保total_steps至少为1
     total_steps = max(1, total_steps)
     
-    if is_main:
-        print(f"每epoch步数: {steps_per_epoch}")
-        print(f"总训练步数: {total_steps}")
+    # if is_main:
+    #     print(f"Steps per epoch: {steps_per_epoch}")
+    #     print(f"Total training steps: {total_steps}")
     
     warmup_steps = 0
     if args.warmup_steps is not None:
@@ -1734,31 +1750,27 @@ def train(args):
     warmup_steps = int(max(0, warmup_steps))
     warmup_steps = min(warmup_steps, max(0, total_steps - 1))
     
-    if is_main:
-        print(f"warmup步数: {warmup_steps}")
+    # if is_main:
+    #     print(f"Warmup steps: {warmup_steps}")
     
+    min_lr_ratio = 0.01
     if warmup_steps > 0:
-        warmup_scheduler = LinearLR(
-            optimizer,
-            start_factor=args.warmup_start_factor,
-            end_factor=1.0,
-            total_iters=warmup_steps,
-        )
-        cosine_scheduler = CosineAnnealingLR(
-            optimizer,
-            T_max=max(1, total_steps - warmup_steps),
-            eta_min=args.lr*0.01,
-        )
-        scheduler = SequentialLR(
-            optimizer,
-            schedulers=[warmup_scheduler, cosine_scheduler],
-            milestones=[warmup_steps],
-        )
+        def lr_lambda(step: int) -> float:
+            if step < warmup_steps:
+                warmup_progress = step / max(1, warmup_steps)
+                return args.warmup_start_factor + (1.0 - args.warmup_start_factor) * warmup_progress
+
+            cosine_progress = (step - warmup_steps) / max(1, total_steps - warmup_steps)
+            cosine_progress = min(max(cosine_progress, 0.0), 1.0)
+            cosine_factor = 0.5 * (1.0 + math.cos(math.pi * cosine_progress))
+            return min_lr_ratio + (1.0 - min_lr_ratio) * cosine_factor
+
+        scheduler = LambdaLR(optimizer, lr_lambda=lr_lambda)
     else:
         scheduler = CosineAnnealingLR(
             optimizer,
             T_max=total_steps,
-            eta_min=args.lr*0.01,
+            eta_min=args.lr * min_lr_ratio,
         )
     
     # 6. 损失函数
@@ -1820,10 +1832,14 @@ def train(args):
     # 恢复训练
     if args.resume:
         if is_main:
-            print(f"\n恢复训练: {args.resume}")
+            print(f"\nResuming training from: {args.resume}")
         trainer.load_checkpoint(args.resume)
     
-    # 8. TensorBoard / WandB
+    # 8. 基准测试模式
+    if args.benchmark_only:
+        return run_benchmark(args, trainer, train_loader, output_dir, dist_info)
+
+    # 9. TensorBoard / WandB
     writer = None
     wandb_run = None
     
@@ -1842,23 +1858,23 @@ def train(args):
                     config=vars(args),
                 )
             except Exception as e:
-                print(f"WandB 初始化失败: {e}")
+                print(f"WandB initialization failed: {e}")
     
-    # 9. 训练循环
+    # 10. 训练循环
     if is_main:
-        print(f"\n开始训练...")
+        print(f"\nStarting training...")
         print(f"Epochs: {args.num_epochs}")
         print(f"Batch Size (per GPU): {args.batch_size}")
         print(f"Total Batch Size: {args.batch_size * dist_info['world_size']}")
-        print(f"梯度累积步数: {args.grad_accum_steps}")
-        print(f"学习率: {args.lr}")
-        print(f"输入Token预算: {args.input_budget}")
-        print(f"锚点采样比例: [{args.anchor_ratio_min}, {args.anchor_ratio_max}]")
-        print(f"输出Token预算: {args.output_budget}")
-        print(f"Beta分布参数: alpha={args.beta_alpha}, beta={args.beta_beta}")
+        print(f"Gradient accumulation steps: {args.grad_accum_steps}")
+        print(f"Learning rate: {args.lr}")
+        print(f"Input token budget: {args.input_budget}")
+        print(f"Anchor sampling ratio: [{args.anchor_ratio_min}, {args.anchor_ratio_max}]")
+        print(f"Output token budget: {args.output_budget}")
+        print(f"Beta distribution parameters: alpha={args.beta_alpha}, beta={args.beta_beta}")
     
     # 记录初始内存使用
-    log_memory_usage("训练开始", dist_info["rank"])
+    log_memory_usage("Training start", dist_info["rank"])
     
     for epoch in range(trainer.epoch, args.num_epochs):
         trainer.epoch = epoch
@@ -1873,7 +1889,7 @@ def train(args):
         num_steps = 0
         
         # 记录epoch开始的内存使用
-        log_memory_usage(f"Epoch {epoch+1} 开始", dist_info["rank"])
+        log_memory_usage(f"Epoch {epoch+1} start", dist_info["rank"])
         
         progress_bar = tqdm(
             train_loader,
@@ -1941,7 +1957,7 @@ def train(args):
         
         # Epoch 结束时强制清理内存
         cleanup_memory(force=True, rank=dist_info["rank"])
-        log_memory_usage(f"Epoch {epoch+1} 结束", dist_info["rank"])
+        log_memory_usage(f"Epoch {epoch+1} end", dist_info["rank"])
         
         # Epoch 结束
         # 移除epoch结束的barrier，避免同步问题
@@ -1951,7 +1967,7 @@ def train(args):
         # 验证
         if val_loader and (epoch + 1) % args.eval_interval == 0:
             if is_main:
-                print(f"\n运行验证...")
+                print(f"\nRunning validation...")
             
             # 验证前强制清理内存
             cleanup_memory(force=True, rank=dist_info["rank"])
@@ -1965,7 +1981,7 @@ def train(args):
                 val_metrics = trainer.validate(val_loader)
             
             if is_main:
-                print(f"验证损失: {val_metrics['val_loss']:.4f}")
+                print(f"Validation loss: {val_metrics['val_loss']:.4f}")
                 
                 if writer:
                     for k, v in val_metrics.items():
@@ -1987,13 +2003,13 @@ def train(args):
             trainer.save_checkpoint(
                 os.path.join(output_dir, "checkpoints", f"checkpoint_epoch_{epoch + 1}.pt"),
             )
-            print(f"检查点已保存: checkpoint_epoch_{epoch + 1}.pt")
+            print(f"Checkpoint saved: checkpoint_epoch_{epoch + 1}.pt")
         
         # 移除保存检查点后的barrier，避免同步问题
         # if dist_info["is_distributed"]:
         #     dist.barrier()
     
-    # 10. 训练结束
+    # 11. 训练结束
     if is_main:
         # 保存最终模型
         trainer.save_checkpoint(
@@ -2001,10 +2017,10 @@ def train(args):
         )
         
         print("\n" + "=" * 80)
-        print("训练完成!")
-        print(f"最佳验证损失: {trainer.best_val_loss:.4f}")
-        print(f"总训练步数: {trainer.global_step}")
-        print(f"输出目录: {output_dir}")
+        print("Training complete!")
+        print(f"Best validation loss: {trainer.best_val_loss:.4f}")
+        print(f"Total training steps: {trainer.global_step}")
+        print(f"Output directory: {output_dir}")
         print("=" * 80)
         
         if writer:
@@ -2016,6 +2032,143 @@ def train(args):
     cleanup_distributed()
     
     return model, trainer
+
+
+def run_benchmark(args, trainer, train_loader, output_dir: str, dist_info: Dict[str, Any]):
+    """运行仅基准测试模式。"""
+    is_main = dist_info["is_main_process"]
+    warmup_steps = max(0, int(args.benchmark_warmup_steps))
+    measure_steps = max(0, int(args.benchmark_measure_steps))
+    total_steps = warmup_steps + measure_steps
+
+    if total_steps <= 0:
+        raise ValueError("benchmark_warmup_steps + benchmark_measure_steps must be greater than 0")
+
+    if hasattr(train_loader, "batch_sampler") and hasattr(train_loader.batch_sampler, "set_epoch"):
+        train_loader.batch_sampler.set_epoch(0)
+    elif hasattr(train_loader, "sampler") and hasattr(train_loader.sampler, "set_epoch"):
+        train_loader.sampler.set_epoch(0)
+
+    if is_main:
+        print(f"\nStarting benchmark...")
+        print(f"Warmup Steps: {warmup_steps}")
+        print(f"Measure Steps: {measure_steps}")
+        print(f"Batch Size (per GPU): {args.batch_size}")
+        print(f"Global Batch Size: {args.batch_size * dist_info['world_size']}")
+        print(f"Gradient accumulation steps: {args.grad_accum_steps}")
+        print(f"Input token budget: {args.input_budget}")
+        print(f"Output token budget: {args.output_budget}")
+
+    trainer.optimizer.zero_grad(set_to_none=True)
+
+    if dist_info["is_distributed"]:
+        dist.barrier()
+
+    data_iter = iter(train_loader)
+    measure_elapsed = 0.0
+    measured_loss_sum = 0.0
+    measured_loss_count = 0
+    micro_steps = 0
+    pending_progress_updates = 0
+    progress_bar = tqdm(
+        total=total_steps,
+        desc="Benchmark",
+        disable=not is_main,
+    )
+
+    while micro_steps < total_steps:
+        batch, data_iter = _next_batch(data_iter, train_loader)
+        step_in_accum = micro_steps % args.grad_accum_steps
+        in_measure_window = micro_steps >= warmup_steps
+
+        if in_measure_window:
+            synchronize_device()
+            step_start = time.perf_counter()
+
+        metrics = trainer.train_step(batch, step_in_accum)
+
+        if in_measure_window:
+            synchronize_device()
+            measure_elapsed += time.perf_counter() - step_start
+
+            current_loss = metrics.get("total_loss", 0.0)
+            if not np.isnan(current_loss) and not np.isinf(current_loss):
+                measured_loss_sum += current_loss
+                measured_loss_count += 1
+
+        micro_steps += 1
+        pending_progress_updates += 1
+        should_refresh_progress = (
+            pending_progress_updates >= 10 or micro_steps == total_steps
+        )
+
+        if should_refresh_progress:
+            progress_bar.update(pending_progress_updates)
+            pending_progress_updates = 0
+
+        if should_refresh_progress and in_measure_window and is_main:
+            avg_loss = measured_loss_sum / max(1, measured_loss_count)
+            progress_bar.set_postfix({
+                "loss": f"{avg_loss:.4f}",
+                "lr": f"{metrics.get('learning_rate', 0.0):.2e}",
+            })
+
+    progress_bar.close()
+
+    trainer.optimizer.zero_grad(set_to_none=True)
+
+    if dist_info["is_distributed"]:
+        dist.barrier()
+
+    elapsed_seconds = _distributed_reduce_scalar(measure_elapsed, op=dist.ReduceOp.MAX)
+    global_loss_sum = _distributed_reduce_scalar(measured_loss_sum, op=dist.ReduceOp.SUM)
+    global_loss_count = _distributed_reduce_scalar(float(measured_loss_count), op=dist.ReduceOp.SUM)
+
+    global_samples = measure_steps * args.batch_size * dist_info["world_size"]
+    samples_per_second_global = global_samples / max(elapsed_seconds, 1e-12)
+    samples_per_second_per_gpu = samples_per_second_global / max(1, dist_info["world_size"])
+    optimizer_steps_per_second = (measure_steps / max(1, args.grad_accum_steps)) / max(elapsed_seconds, 1e-12)
+    approx_tokens_per_second = samples_per_second_global * (args.input_budget + args.output_budget)
+    avg_loss = global_loss_sum / max(1.0, global_loss_count)
+
+    summary = {
+        "mode": "benchmark_only",
+        "world_size": dist_info["world_size"],
+        "warmup_steps": warmup_steps,
+        "measure_steps": measure_steps,
+        "batch_size_per_gpu": args.batch_size,
+        "global_batch_size": args.batch_size * dist_info["world_size"],
+        "grad_accum_steps": args.grad_accum_steps,
+        "input_budget": args.input_budget,
+        "output_budget": args.output_budget,
+        "elapsed_seconds": elapsed_seconds,
+        "samples_per_second_global": samples_per_second_global,
+        "samples_per_second_per_gpu": samples_per_second_per_gpu,
+        "optimizer_steps_per_second": optimizer_steps_per_second,
+        "approx_tokens_per_second_global": approx_tokens_per_second,
+        "average_loss": avg_loss,
+        "output_dir": output_dir,
+    }
+
+    if is_main:
+        summary_path = os.path.join(output_dir, "benchmark_summary.json")
+        with open(summary_path, "w") as f:
+            json.dump(summary, f, indent=2)
+
+        print("\n" + "=" * 80)
+        print("Benchmark complete!")
+        print(f"Measured time: {elapsed_seconds:.4f}s")
+        print(f"Global throughput: {samples_per_second_global:.2f} samples/s")
+        print(f"Per-GPU throughput: {samples_per_second_per_gpu:.2f} samples/s")
+        print(f"Optimizer step rate: {optimizer_steps_per_second:.2f} steps/s")
+        print(f"Approximate token throughput: {approx_tokens_per_second:.2f} tokens/s")
+        print(f"Average loss: {avg_loss:.4f}")
+        print(f"Benchmark summary: {summary_path}")
+        print("=" * 80)
+
+    cleanup_distributed()
+
+    return trainer.model, trainer
 
 
 def parse_args():
@@ -2035,7 +2188,7 @@ def parse_args():
                         help="训练数据路径（JSON token文件或包含多个JSON文件的文件夹）")
     parser.add_argument("--val_split", type=float, default=0.05,
                         help="验证集比例（从数据末尾划分）")
-    parser.add_argument("--max_samples", type=int, default=1000,
+    parser.add_argument("--max_samples", type=int, default=None,
                         help="最大训练样本数")
     
     # 训练参数
@@ -2049,7 +2202,7 @@ def parse_args():
                         help="每轮步数")
     parser.add_argument("--grad_accum_steps", type=int, default=2,
                         help="梯度累积步数")
-    parser.add_argument("--num_workers", type=int, default=4,
+    parser.add_argument("--num_workers", type=int, default=8,
                         help="数据加载线程数")
     
     # 优化器参数
@@ -2091,6 +2244,12 @@ def parse_args():
                         help="Beta分布alpha参数（控制输出数量分布，越小越向零偏斜）")
     parser.add_argument("--beta_beta", type=float, default=4,
                         help="Beta分布beta参数（控制输出数量分布，越大越向零偏斜）")
+    parser.add_argument("--benchmark_only", action="store_true",
+                        help="仅运行基准测试，不执行完整训练/验证/保存流程")
+    parser.add_argument("--benchmark_warmup_steps", type=int, default=200,
+                        help="基准测试预热步数")
+    parser.add_argument("--benchmark_measure_steps", type=int, default=1000,
+                        help="基准测试测量步数")
     
     # 混合精度
     parser.add_argument("--use_amp", action="store_true", default=True,
