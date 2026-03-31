@@ -1,4 +1,4 @@
-# AION Quick Start Guide
+# OneAstronomy Benchmark (currenlty AION) Quick Start Guide
 
 ## 1. Data Preparation
 
