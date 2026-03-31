@@ -1,0 +1,9 @@
+# GSSR Reports
+
+If the PDF preview does not load on GitHub, please click "Download" or "View Raw" to open the file.
+
+Alternatively, direct links, e.g:
+
+- 4 GPU: https://raw.githubusercontent.com/USERNAME/repo/main/reports/gssr_4gpu.pdf
+- 16 GPU: https://raw.githubusercontent.com/USERNAME/repo/main/reports/gssr_16gpu.pdf
+- 64 GPU: https://raw.githubusercontent.com/USERNAME/repo/main/reports/gssr_64gpu.pdf
