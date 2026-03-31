@@ -15,7 +15,8 @@ DIR='/capstor/store/cscs/pasc/c39/swiss-ai/test/reports'
 LOG_DIR="${DIR}/${NUM}"
 
 GSSR_ANALYZE=/users/she/bin/packages/GPU-Saturation-Scorer/gssr-analyze
-GSSR_INPUT=${LOG_DIR}/gssr_report/alps-daint_${NUM}
+# GSSR_INPUT=${LOG_DIR}/gssr_report/claridian_${NUM}
+GSSR_INPUT=${LOG_DIR}/gssr_report/clariden_${NUM}
 PDF_OUTPUT=${LOG_DIR}/gssr-report-${NUM}.pdf
 GSSR_UV_ACTIVE=1 python "$GSSR_ANALYZE" "$GSSR_INPUT" -o "$PDF_OUTPUT"
 echo "Saved GSSR report to: $PDF_OUTPUT"
