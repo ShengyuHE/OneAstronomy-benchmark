@@ -1,0 +1,15 @@
+{
+    "gssr-record-version": "2.0",
+    "date": "2026-03-31T08:03:21+0200",
+    "cluster": "clariden",
+    "jobid": "1766785",
+    "jobname": "OneAstro-bench",
+    "nnodes": "4",
+    "ntasks": "4",
+    "ngpus": "4",
+    "step_nnodes": "4",
+    "step_ntasks": "4",
+    "executable": "torchrun",
+    "arguments": "'--nnodes=4' '--node_rank=0' '--nproc_per_node=4' '--rdzv_backend=c10d' '--rdzv_endpoint=nid006586:29500' './train_aion_ddp_v4.12_token.py' '--model_name' 'polymathic-ai/aion-base' '--batch_size' '64' '--weight_decay' '0.1' '--num_workers' '16' '--use_amp' '--use_tensorboard' '--grad_accum_steps' '1' '--num_workers' '16' '--input_budget' '256' '--anchor_ratio_min' '0.8' '--anchor_ratio_max' '1.6' '--output_budget' '128' '--beta_alpha' '1.0' '--beta_beta' '4' '--data_path' '/capstor/store/cscs/pasc/c39/swiss-ai/test/data/train/' '--output_dir' '/capstor/store/cscs/pasc/c39/swiss-ai/benchmark/1766785' '--benchmark_only' '--benchmark_warmup_steps' '200' '--benchmark_measure_steps' '1800' "
+}
+
